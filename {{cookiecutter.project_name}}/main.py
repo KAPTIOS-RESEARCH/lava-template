@@ -1,9 +1,11 @@
-import logging
+import logging, os
 from argparse import ArgumentParser
 from src.utils.config import load_config_file, instanciate_module
 from src.core.experiment import AbstractExperiment
 
 if __name__ == "__main__":
+
+    os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1" 
 
     project_name = "{{cookiecutter.project_name}}"
 

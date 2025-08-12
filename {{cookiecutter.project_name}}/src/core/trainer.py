@@ -36,8 +36,6 @@ class BaseTrainer(object):
             classifier=self.classifier.predict
         )
         for epoch in range(num_epochs):
-            
-            logging.info(f"Epoch {epoch + 1} / {num_epochs}")
         
             for i, (input, label) in enumerate(train_dl):
                 assistant.train(input, label)

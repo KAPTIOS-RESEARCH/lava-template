@@ -17,7 +17,7 @@ It supports the following:
 
 ## Installation
 
-First, the dependencies should be installed the provided conda environment depending on your OS : 
+First, the dependencies should be installed the provided conda environment : 
 
 ```bash
 conda env create -f environment.yml
@@ -43,35 +43,6 @@ You can run an task by pointing to its configuration file like :
 ```bash
 python main.py --config_path ./tasks/default/train.yaml
 ```
-
-
-## Export a saved model
-
-The framework supports exporting a saved PyTorch model to ONNX.
-To do so, an export config yaml file should be given as flag to the ```export.py``` script.
-
-```bash
-python export.py --export_config_path ./tasks/default/export.yaml
-```
-
-This file should look like : 
-
-```yaml
-export_path: './exports'
-model_path: './saved_models/best_model.pth'
-quantization_dataset:
-  module_name: src.data.sets.super_resolution
-  class_name: FastMRISuperResolutionDataReader
-  parameters:
-    data_folder: /path/to/dataset
-    num_samples: 100
-model:
-  class_name: SRResUNet
-  module_name: src.models.super_resolution
-  parameters:
-```
-
-By default, the export also saves a quantized version of the model. For this to work, a Calibration Dataset should be passed using the ```quantization_dataset``` key.
 
 ### Create a custom task
 
