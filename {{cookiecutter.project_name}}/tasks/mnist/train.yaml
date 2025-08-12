@@ -1,0 +1,38 @@
+name: MNIST Classification
+seed: 1234
+
+model:
+  class_name: MNIST_SNN
+  module_name: src.models.mnist
+  parameters:
+
+dataloader:
+  class_name: SMNISTDataloader
+  module_name: src.data.loaders.mnist
+  parameters:
+    n_steps: 32
+    batch_size: 32
+    num_workers: 4
+    debug: True
+
+trainer:
+  class_name: BaseTrainer
+  module_name: src.core.trainer
+  parameters:
+    num_epochs: 10
+    lr: 0.0001
+    weight_decay: 0.00001
+    loss:
+      class_name: SpikeRate
+      module_name: lava.lib.dl.slayer.loss
+      parameters:
+        true_rate: 0.7
+        false_rate: 0.01
+        reduction: "sum"
+    classifier:
+      class_name: Rate
+      module_name: lava.lib.dl.slayer.classifier
+
+experiment:
+  class_name: BaseExperiment
+  module_name: src.core.experiment

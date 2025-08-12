@@ -1,0 +1,8 @@
+{
+    "project_name": "my-project",
+    "author_name": "john dorian",
+    "__prompts__": {
+        "project_name": "What's your project name ?",
+        "author_name": "Author name ?"
+    }
+}
