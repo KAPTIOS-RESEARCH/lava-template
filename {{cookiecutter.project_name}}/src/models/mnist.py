@@ -1,35 +1,32 @@
 import torch, h5py
 import lava.lib.dl.slayer as slayer
+from .base import BaseLavaModel
+from typing import List
 
-class MNIST_SNN(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-        
-        neuron_params = {
-            'threshold': 1.0,
-            'current_decay': 0.1,
-            'voltage_decay': 0.1,
-            'requires_grad': True,
-        }
-        
-        self.layers = torch.nn.ModuleList([
-            slayer.block.cuba.Dense(
-                neuron_params, 784, 128, weight_norm=False, delay=False),
-            slayer.block.cuba.Dense(
-                neuron_params, 128, 64, weight_norm=False, delay=False),
-            slayer.block.cuba.Dense(
-                neuron_params, 64, 10, weight_norm=False, delay=False)
-        ])
+DEFAULT_NEURON = {
+    'threshold': 1.0,
+    'current_decay': 0.1,
+    'voltage_decay': 0.1,
+    'requires_grad': True,
+}
 
-    def export(self, filename):
-        """
-        Export the network to hdf5 format.
-        """
-        h = h5py.File(filename, "w")
-        layer = h.create_group("layer")
-        for i, block in enumerate(self.layers):
-            block.export_hdf5(layer.create_group(f'{i}'))
-            
+class MNIST_SNN(BaseLavaModel):
+    def __init__(self, 
+        neuron_params: dict = DEFAULT_NEURON, 
+        features_list: List[int] = [784, 128, 64, 10],
+        lava_block_str: str = 'cuba'
+    ):
+        super(MNIST_SNN, self).__init__()
+    
+        self.layers = self.set_monitored_layers(
+            self.init_sequential_dense_layers(
+                neuron_params, 
+                features_list, 
+                lava_block_str, 
+                True, 
+                False), 
+            'FC')
+
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)

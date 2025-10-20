@@ -5,7 +5,15 @@ model:
   class_name: MNIST_SNN
   module_name: src.models.mnist
   parameters:
-
+    neuron_params:
+      threshold: 1.0        # Neuron firing threshold
+      current_decay: 0.1    # Leak term for membrane potential
+      voltage_decay: 0.1    # Synaptic current decay
+      tau_grad: 0.03        # Surrogate gradient time constant
+      scale_grad: 3         # Surrogate gradient scale
+    features_list: !!python/tuple [784, 128, 64, 10]
+    lava_block_str: cuba
+    
 dataloader:
   class_name: SMNISTDataloader
   module_name: src.data.loaders.mnist
@@ -13,26 +21,22 @@ dataloader:
     n_steps: 32
     batch_size: 32
     num_workers: 4
-    debug: True
+    debug: False
 
 trainer:
   class_name: BaseTrainer
   module_name: src.core.trainer
   parameters:
     num_epochs: 10
-    lr: 0.0001
+    lr: 0.001
     weight_decay: 0.00001
     loss:
       class_name: SpikeRate
       module_name: lava.lib.dl.slayer.loss
       parameters:
-        true_rate: 0.7
-        false_rate: 0.01
+        true_rate: 0.8
+        false_rate: 0.2
         reduction: "sum"
-    classifier:
-      class_name: Rate
-      module_name: lava.lib.dl.slayer.classifier
-
 experiment:
   class_name: BaseExperiment
   module_name: src.core.experiment

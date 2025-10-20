@@ -1,12 +1,10 @@
-import logging, os
+import logging, warnings
+warnings.filterwarnings("ignore")
 from argparse import ArgumentParser
 from src.utils.config import load_config_file, instanciate_module
 from src.core.experiment import AbstractExperiment
 
 if __name__ == "__main__":
-
-    os.environ["PYTORCH_ENABLE_MPS_FALLBACK"]="1" 
-
     project_name = "{{cookiecutter.project_name}}"
 
     logging.basicConfig(
@@ -18,8 +16,6 @@ if __name__ == "__main__":
     parser.add_argument("--config_path", type=str, required=True)
     args = parser.parse_args()
     config = load_config_file(args.config_path)
-
-    # EXPERIMENT INIT
 
     experiment_cls = config['experiment']['class_name']
     experiment_md = config['experiment']['module_name']

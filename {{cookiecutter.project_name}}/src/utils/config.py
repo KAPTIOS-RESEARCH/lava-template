@@ -4,7 +4,38 @@ import importlib
 import numpy as np
 import yaml
 import logging
+import lava.lib.dl.slayer as slayer
 
+def get_available_device():
+    """
+    Select the best available device for PyTorch computation.
+
+    Priority order:
+    - CUDA (GPU) if available
+    - MPS (Apple Silicon) if available
+    - CPU if no GPU or MPS is available
+    
+    Returns:
+        device (torch.device): The selected PyTorch device.
+    """
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    else:
+        return torch.device("cpu")
+
+def get_lava_block(block_type: str):
+    """
+    Dynamically return a block from slayer.block given its name.
+    
+    Args:
+        block_type (str): Name of the block, e.g., 'alif', 'cuba'
+    Returns:
+        An instance of the block
+    """
+    if not hasattr(slayer.block, block_type):
+        raise ValueError(f"Block type '{block_type}' not found in lava.lib.dl.slayer.block")
+    BlockClass = getattr(slayer.block, block_type)
+    return BlockClass
 
 def validate_config_file(params: dict):
     """Validate the config .yaml file
